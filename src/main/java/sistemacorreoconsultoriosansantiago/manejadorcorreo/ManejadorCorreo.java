@@ -30,7 +30,7 @@ public class ManejadorCorreo {
     
     private final String user = dotenv.get("MAIL_USER");//"infodevdevs@gmail.com";
     private final String pass = dotenv.get("MAIL_PASS");
-    private String destinatario;
+ 
     
     public void iniciar() {
         Properties properties = new Properties();
@@ -48,7 +48,7 @@ public class ManejadorCorreo {
                     Message[] messages = ev.getMessages();
                     for (Message message : messages) {
                         // Crea un nuevo hilo para cada mensaje
-                        Thread thread = new Thread(new ThreadAnalizeMessage(message, destinatario));
+                        Thread thread = new Thread(new ThreadAnalizeMessage(message));
                         thread.start();
                     }
                 }

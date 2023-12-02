@@ -22,9 +22,8 @@ public class ThreadAnalizeMessage extends Thread {
     private Message message;
     private String destinatario;
 
-    public ThreadAnalizeMessage(Message message, String destinatario) {
+    public ThreadAnalizeMessage(Message message) {
         this.message = message;
-        this.destinatario = destinatario;
     }
 
     @Override
@@ -43,7 +42,8 @@ public class ThreadAnalizeMessage extends Thread {
                     BodyPart bodyPart = multipart.getBodyPart(i);
                     if (bodyPart.isMimeType("text/plain")) {
                         String command = (String) bodyPart.getContent();
-                        InformacionComando ic = analizador.analizarSintaxis(command);
+                        
+                        InformacionComando ic = analizador.analizarSintaxis(command); //null, null, null, accion,tabla,null]
                         if (analizador.analizarTabla(ic)) {
 
                             if (ic.getAtributos() != null) {

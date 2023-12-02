@@ -4,6 +4,7 @@
  */
 package sistemaconsultoriosansantiago.datos;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -12,12 +13,14 @@ import java.sql.DriverManager;
  * @author Christian
  */
 public class DB {
- 
+
+    Dotenv dotenv = Dotenv.load();
+
     Connection conectar = null;
-    String servidor = "localhost";// (PostgreSQL);
-    String usuario = "postgres";//
-    String contraseña = "9821736";
-    String db = "db_tecno_consultorio";
+    String servidor = dotenv.get("DB_HOST");
+    String usuario = dotenv.get("DB_USER");
+    String contraseña = dotenv.get("DB_PASS");
+    String db = dotenv.get("DB_DATABASE");
     String cadena = "jdbc:postgresql://" + servidor + "/" + db;
 
     public Connection establecerConexion() {
