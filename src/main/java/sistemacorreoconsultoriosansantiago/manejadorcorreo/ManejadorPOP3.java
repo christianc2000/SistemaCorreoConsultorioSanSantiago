@@ -1,27 +1,15 @@
 package sistemacorreoconsultoriosansantiago.manejadorcorreo;
 
-import com.sun.mail.pop3.POP3Store;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.BodyPart;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -54,7 +42,7 @@ public class ManejadorPOP3 {
         port = 110;
     }
 
-    public void iniciar() {
+    public void iniciar(){
         try {
             while (true) {
                 // Crear un socket y conectarse al servidor
@@ -87,8 +75,12 @@ public class ManejadorPOP3 {
                     System.out.print("C : " + comando);
                     salida.writeBytes(comando);
                     fm.getMultiline(entrada);
+                    System.out.println("MENSAJE COD: " + fm.getMensaje());
+                    String encoded = fm.getMensaje();
+                    String decoded = MimeUtility.decodeText(encoded);
+                    System.out.println("MENSAJE DEC: " + decoded);
                     System.out.println("S : \nDestino: " + fm.getCorreo() + "\nAsunto: " + fm.getAsunto() + "\nSubject: " + fm.getMensaje() + "\r\n");//imprime el último mensaje
-                    Thread thread = new Thread(new ThreadAnalizeMessagePop3(fm.getMensaje(),fm.getCorreo()));
+                    Thread thread = new Thread(new ThreadAnalizeMessagePop3(fm.getMensaje().trim(), fm.getCorreo()));
                     thread.start();
                 }
 

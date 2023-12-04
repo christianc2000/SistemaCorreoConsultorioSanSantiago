@@ -6,10 +6,15 @@ package sistemaconsultoriosansantiago.datos;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -177,7 +182,7 @@ public class Consulta {
                     consulta.diagnostico = rs.getString("diagnostico");
                     consulta.historialId = rs.getString("historialId");
 
-                    consultas.put(Integer.parseInt(consulta.id), consulta);
+                    consultas.put(nullIdKey++, consulta);
                 }
             }
 
@@ -190,4 +195,64 @@ public class Consulta {
 
         return consultas;
     }
+
+    public String tituloListar() {
+        return "LISTA DE CONSULTAS";
+    }
+
+    public String tituloInsertar() {
+        return "CONSULTAS REGISTRADA";
+    }
+
+    public HashMap<Integer, Object> insertar(Consulta consulta) {
+        HashMap<Integer, Object> consultas = new HashMap<>();
+        int nullIdKey = 1;
+
+        System.out.println("examen Fisico: " + consulta.getExamenFisico());
+        try {
+            Connection connection = db.establecerConexion();
+            String sql = "INSERT INTO consultas (\"fecha\", \"motivo\", \"observaciones\", \"examenFisico\", \"diagnostico\", \"historialId\") VALUES (?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setTimestamp(1, convertirStringATimestamp(consulta.getFecha()));
+            preparedStatement.setString(2, consulta.getMotivo());
+            preparedStatement.setString(3, consulta.getObservaciones());
+            preparedStatement.setString(4, consulta.getExamenFisico());
+            preparedStatement.setString(5, consulta.getDiagnostico());
+            preparedStatement.setInt(6, Integer.parseInt(consulta.getHistorialId()));
+
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("La creación de la consulta falló, no se insertaron filas.");
+            }
+
+            try ( ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    consulta.id = generatedKeys.getString(1);
+                } else {
+                    throw new SQLException("La creación de la consulta falló, no se obtuvo el ID.");
+                }
+            }
+
+            connection.close();
+            consultas.put(nullIdKey++, consulta);
+            return consultas;
+        } catch (SQLException e) {
+            System.out.println("Error al conectar a la Base de datos: " + e.toString());
+            return null;
+        }
+    }
+
+    public Timestamp convertirStringATimestamp(String fecha) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            Date parsedDate = dateFormat.parse(fecha);
+            return new Timestamp(parsedDate.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
