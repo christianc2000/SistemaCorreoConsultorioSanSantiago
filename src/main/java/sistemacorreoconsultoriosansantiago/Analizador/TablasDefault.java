@@ -12,19 +12,22 @@ import java.util.List;
  * @author Christian
  */
 public class TablasDefault {
-     private static Tabla tablas[];
+
+    private static Tabla tablas[];
 
     public TablasDefault() {
         List<String> usuarioAtr = Arrays.asList("id", "ci", "nombre", "apellido", "fechaNacimiento", "celular", "tipo", "genero", "residenciaActual", "email", "password", "urlFoto", "formacion", "sueldo", "hijo", "ocupacion");
         List<String> consultaAtr = Arrays.asList("id", "fecha", "motivo", "examenFisico", "observaciones", "diagnostico", "historialId");
-        
+        List<String> reporteAtr = Arrays.asList("id", "fechaReporte", "urlDocumento", "userId");
+
         Tabla tablaUsuario = new Tabla("users", usuarioAtr);
         Tabla tablaConsulta = new Tabla("consultas", consultaAtr);
-        this.tablas = new Tabla[]{tablaUsuario,tablaConsulta};
+        Tabla tablaReporte = new Tabla("reportes", reporteAtr);
+        this.tablas = new Tabla[]{tablaUsuario, tablaConsulta, tablaReporte};
     }
 
     public Tabla[] getTablas() {
         return tablas;
     }
-    
+
 }
