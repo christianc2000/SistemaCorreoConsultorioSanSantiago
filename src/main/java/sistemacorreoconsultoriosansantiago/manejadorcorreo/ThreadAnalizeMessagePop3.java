@@ -9,6 +9,7 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMultipart;
+import sistemaconsultoriosansantiago.datos.Cita;
 import sistemaconsultoriosansantiago.datos.Consulta;
 import sistemaconsultoriosansantiago.datos.User;
 import sistemacorreoconsultoriosansantiago.Analizador.AnalizarSintaxis;
@@ -65,6 +66,19 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                 }
                                
                                 sc.enviar(tituloConsulta, consultas, destinatario);
+                                break;
+                            case "citas":
+                                Cita cita = new Cita();
+                                //System.out.println("atributos: " + ic.getAtributos()[0]);
+                                HashMap<Integer, Object> citas = cita.listar(ic.getAtributos());
+                                Cita primerCita = (Cita) citas.get(1);
+                                String[] tituloCita = primerCita.getAtributos();
+
+                                for (int i = 0; i < tituloCita.length; i++) {
+                                    System.out.println("titulo " + i + ": " + tituloCita[i]);
+                                }
+                               
+                                sc.enviar(tituloCita, citas, destinatario);
                                 break;
                             default:
                                 throw new AssertionError();

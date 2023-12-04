@@ -17,10 +17,12 @@ public class TablasDefault {
     public TablasDefault() {
         List<String> usuarioAtr = Arrays.asList("id", "ci", "nombre", "apellido", "fechaNacimiento", "celular", "tipo", "genero", "residenciaActual", "email", "password", "urlFoto", "formacion", "sueldo", "hijo", "ocupacion");
         List<String> consultaAtr = Arrays.asList("id", "fecha", "motivo", "examenFisico", "observaciones", "diagnostico", "historialId");
-        
+        List<String> citaAtr = Arrays.asList("id", "estadoCita", "fechaCita", "costoCita", "pacienteId", "medicoId");
+         
         Tabla tablaUsuario = new Tabla("users", usuarioAtr);
         Tabla tablaConsulta = new Tabla("consultas", consultaAtr);
-        this.tablas = new Tabla[]{tablaUsuario,tablaConsulta};
+        Tabla tablaCita = new Tabla("citas", citaAtr);
+        this.tablas = new Tabla[]{tablaUsuario,tablaConsulta, tablaCita};
     }
 
     public Tabla[] getTablas() {

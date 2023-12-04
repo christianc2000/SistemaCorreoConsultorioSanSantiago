@@ -4,11 +4,13 @@
  */
 package sistemaconsultoriosansantiago.datos;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -18,7 +20,7 @@ import java.util.HashMap;
  */
 public class Cita {
     
-    private int id;
+    private String id;
     private String fechaCita;
     private String estadoCita;
     private String costoCita;
@@ -30,7 +32,7 @@ public class Cita {
     DB db = new DB();
 
     // Constructor
-    public Cita(int id, String estadoCita, String costoCita, String fechaCita, int pacienteId, int medicoId) {
+    public Cita(String id, String estadoCita, String costoCita, String fechaCita, int pacienteId, int medicoId) {
         this.id = id;
         this.fechaCita = fechaCita;
         this.estadoCita = estadoCita;
@@ -40,7 +42,7 @@ public class Cita {
     }
 
     public Cita() {
-        this.id = 0;
+        this.id = "";
         this.fechaCita = "";
         this.estadoCita = "";
         this.costoCita = "";
@@ -49,11 +51,11 @@ public class Cita {
     }
 
     // Getters y setters (puedes generarlos automáticamente en muchos IDEs)
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -111,33 +113,81 @@ public class Cita {
         return db;
     }
 
-    public HashMap<Integer, Cita> listar() {
-        HashMap<Integer, Cita> citas = new HashMap<>();
+   
+    public HashMap<Integer, Object> listar(String atributos[]) {
+        HashMap<Integer, Object> citas = new HashMap<>();
+        int nullIdKey = 1; // Clave para usuarios sin id
         try {
             Connection connection = db.establecerConexion();
             Statement st = connection.createStatement();
-            String sql = "SELECT * FROM citas;";
+            String atr = "";
+            if (atributos != null) {
+                for (int i = 0; i < atributos.length - 1; i++) {
+                    atr = atr + "\"" + atributos[i] + "\",";
+                }
+                atr = atr + "\"" + atributos[atributos.length - 1] + "\"";
+            } else {
+                atr = "*";
+            }
+            String sql = "SELECT " + atr + " FROM citas;";
+
             ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
                 Cita cita = new Cita();
-                cita.id = rs.getInt("id");
-                cita.estadoCita = rs.getString("estadoCita");
-                cita.fechaCita = rs.getString("fechaCita");
-                cita.costoCita = rs.getString("costoCita");
-                cita.pacienteId = rs.getInt("pacienteId");
-                cita.medicoId = rs.getInt("medicoId");
-
-                citas.put(cita.id, cita);
+                if (atributos != null) {
+                    for (String atributo : atributos) {
+                        Field field = User.class.getDeclaredField(atributo);
+                        field.setAccessible(true);
+                        field.set(cita, rs.getString(atributo));
+                    }
+                    citas.put(nullIdKey++, cita); // Usa nullIdKey como clave y luego incrementa su valor
+                } else {
+                    cita.id = rs.getString("id");
+                    cita.fechaCita = rs.getString("fechaCita");
+                    cita.estadoCita = rs.getString("estadoCita");
+                    cita.costoCita = rs.getString("costoCita");
+                    cita.pacienteId = rs.getInt("pacienteId");
+                    cita.medicoId = rs.getInt("medicoId");
+                   
+                    System.out.println("fechaCita: " + cita.fechaCita);
+                    System.out.println("estadoCita: " + cita.estadoCita);
+                    System.out.println("costoCita: " + cita.costoCita);
+                    System.out.println("pacienteId: " + cita.pacienteId);
+                    System.out.println("medicoId: " + cita.medicoId);
+                    citas.put(Integer.parseInt(cita.id), cita);
+                }
             }
 
             rs.close();
             connection.close();
             // System.out.println("EL REGISTRO SE REALIZO EXITOSAMENTE");
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
             System.out.println("Error al conectar a la Base de datos: " + e.toString());
         }
 
         return citas;
+    }
+    
+    
+    public String[] getAtributos() {
+        ArrayList<String> atributosConValor = new ArrayList<>();
+        Field[] fields = User.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            String nombreAtributo = field.getName();
+            if (!nombreAtributo.equals("st") && !nombreAtributo.equals("rs") && !nombreAtributo.equals("db")) {
+                field.setAccessible(true);
+                try {
+                    if (field.get(this) != null) {
+                        atributosConValor.add(nombreAtributo);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return atributosConValor.toArray(new String[0]);
     }
 }
