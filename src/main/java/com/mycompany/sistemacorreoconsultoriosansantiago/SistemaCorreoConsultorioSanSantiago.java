@@ -8,6 +8,7 @@ import java.util.Scanner;
 import sistemacorreoconsultoriosansantiago.Analizador.AnalizarSintaxis;
 import sistemacorreoconsultoriosansantiago.Analizador.InformacionComando;
 import sistemacorreoconsultoriosansantiago.manejadorcorreo.ManejadorCorreo;
+import sistemacorreoconsultoriosansantiago.manejadorcorreo.ManejadorPOP3;
 
 /**
  *
@@ -16,7 +17,9 @@ import sistemacorreoconsultoriosansantiago.manejadorcorreo.ManejadorCorreo;
 public class SistemaCorreoConsultorioSanSantiago {
 
     public static void main(String[] args) {
-        ManejadorCorreo manejador = new ManejadorCorreo();
+        //ManejadorCorreo manejador = new ManejadorCorreo();
+        //manejador.iniciar();
+        ManejadorPOP3 manejador = new ManejadorPOP3();
         manejador.iniciar();
     }
 }

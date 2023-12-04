@@ -4,7 +4,10 @@
  */
 package sistemacorreoconsultoriosansantiago.manejadorcorreo;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sistemaconsultoriosansantiago.datos.User;
 
 /**
@@ -13,7 +16,7 @@ import sistemaconsultoriosansantiago.datos.User;
  */
 public class Respuesta {
 
-    public String generarTablaHTML(HashMap<Integer, User> usuarios) {
+    public String generarTablaHTML(String titulo[], HashMap<Integer, Object> Objeto) {
         StringBuilder html = new StringBuilder();
 
         html.append("<!DOCTYPE html>\n");
@@ -26,22 +29,32 @@ public class Respuesta {
         html.append("</head>\n");
         html.append("<body>\n");
         html.append("<table>\n");
-        html.append("<tr><th>ID</th><th>CI</th><th>Nombre</th><th>Apellido</th><th>Fecha de Nacimiento</th><th>Residencia Actual</th><th>Celular</th><th>Género</th><th>Tipo</th><th>URL Foto</th><th>Email</th><th>Password</th></tr>\n");
+        html.append("<tr>");
+        for (int i = 0; i < titulo.length; i++) {
+            html.append("<th>").append(titulo[i]).append("</th>");
+        }
+        html.append("</tr>");
 
-        for (User usuario : usuarios.values()) {
+        for (Object obj : Objeto.values()) {
             html.append("<tr>");
-            html.append("<td>").append(usuario.getId()).append("</td>");
-            html.append("<td>").append(usuario.getCi()).append("</td>");
-            html.append("<td>").append(usuario.getNombre()).append("</td>");
-            html.append("<td>").append(usuario.getApellido()).append("</td>");
-            html.append("<td>").append(usuario.getFechaNacimiento()).append("</td>");
-            html.append("<td>").append(usuario.getResidenciaActual()).append("</td>");
-            html.append("<td>").append(usuario.getCelular()).append("</td>");
-            html.append("<td>").append(usuario.getGenero()).append("</td>");
-            html.append("<td>").append(usuario.getTipo()).append("</td>");
-            html.append("<td>").append(usuario.getUrlFoto()).append("</td>");
-            html.append("<td>").append(usuario.getUrlFoto()).append("</td>");
-            html.append("<td>").append(usuario.getPassword()).append("</td>");
+            for (String atributo : titulo) {
+
+                try {
+                    Field field = obj.getClass().getDeclaredField(atributo);
+                    field.setAccessible(true);
+                    String valor = (String) field.get(obj);
+                    html.append("<td>").append(valor).append("</td>");
+                } catch (NoSuchFieldException ex) {
+                    Logger.getLogger(Respuesta.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SecurityException ex) {
+                    Logger.getLogger(Respuesta.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(Respuesta.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Respuesta.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
             html.append("</tr>\n");
         }
 
@@ -51,6 +64,5 @@ public class Respuesta {
 
         return html.toString();
     }
-   
-   
+
 }
