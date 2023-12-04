@@ -72,14 +72,19 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                 Reporte reporte = new Reporte();
                                 //System.out.println("atributos: " + ic.getAtributos()[0]);
                                 HashMap<Integer, Object> reportes = reporte.listar(ic.getAtributos());
-                                Reporte primerReporte = (Reporte) reportes.get(1);
-                                String[] tituloReporte = primerReporte.getAtributos();
+                                if (reportes.size() > 0) {
+                                    Reporte primerReporte = (Reporte) reportes.get(1);
+                                    String[] tituloReporte = primerReporte.getAtributos();
 
-                                for (int i = 0; i < tituloReporte.length; i++) {
-                                    System.out.println("titulo " + i + ": " + tituloReporte[i]);
+                                    for (int i = 0; i < tituloReporte.length; i++) {
+                                        System.out.println("titulo " + i + ": " + tituloReporte[i]);
+                                    }
+
+                                    sc.enviar(tituloReporte, reportes, destinatario);
+                                } else {
+                                    System.out.println("ENVIAR ERROR QUE ESTÁ VACÍO");
                                 }
 
-                                sc.enviar(tituloReporte, reportes, destinatario);
                                 break;
                             default:
                                 throw new AssertionError();
