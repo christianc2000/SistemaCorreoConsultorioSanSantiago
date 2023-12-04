@@ -35,10 +35,13 @@ public class AnalizarSintaxis {
                     if (listMatcher.matches()) {
                         String table = listMatcher.group(1);
                         String attributes = listMatcher.group(2);
+                        System.out.println("TABLA: " + table);
+                        System.out.println("ATRIBUTOS: " + attributes);
                         respuesta.setAccion("LIST");
                         respuesta.setTabla(table);
                         if (attributes != null) {
-                            attributes = attributes.substring(0, attributes.length() - 1);
+                            attributes = attributes.substring(1, attributes.length());
+                            attributes = attributes.replace("\"", "");
                             respuesta.setAtributos(attributes.split(","));
                         }
                         //System.out.println("Sintaxis de consulta correcta: tabla=" + table + ", " + attributes.substring(1, attributes.length() - 1));
@@ -76,33 +79,36 @@ public class AnalizarSintaxis {
     public boolean analizarTabla(InformacionComando ic) { //[accion,tabla,String[]]
         TablasDefault td = new TablasDefault();
         for (int i = 0; i < td.getTablas().length; i++) {
+            System.out.println("tabla: " + ic.getTabla() + ", tabla comparacion: " + td.getTablas()[i].getNombre());
             if (ic.getTabla().equals(td.getTablas()[i].getNombre())) {
+                System.out.println("ic atributos: " + ic.getAtributos());
                 if (ic.getAtributos() != null) {
+                    System.out.println("ATRIBUTO DISTINO DE NULL");
                     if (analizarAtributos(ic.getAtributos(), td.getTablas()[i].getAtributos())) {
                         return true;
                     } else {
+                        System.out.println("ATRIBUTOS NULL");
                         return false;
                     }
                 } else {
-//LISTAR CON *
+//LISTAR CON *  System.out.println("ATRIBUTOS NULL");
+                    System.out.println("atributos null");
                     return true;
                 }
-            } else {
-                return false;
             }
         }
         return false;
     }
 
     public boolean analizarAtributos(String atributos[], List<String> atributosComparacion) {
-        for (int i = 0; i < atributosComparacion.size(); i++) {
-            for (int j = 0; j < atributos.length; j++) {
-                String atributo=atributos[j].substring(1,atributos[j].length()-2);
-                if (atributosComparacion.get(i) != atributo) {
-                    return false;
-                }
+        for (String atributo : atributos) {
+            System.out.println("atributo: " + atributo);
+            if (!atributosComparacion.contains(atributo)) {
+                return false;
             }
         }
         return true;
     }
+
+    
 }

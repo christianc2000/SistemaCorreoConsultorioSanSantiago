@@ -51,9 +51,9 @@ public class ThreadAnalizeMessage extends Thread {
                             } else {
                                 //no hay atributos, es un *
                                 User user = new User();
-                                HashMap<Integer, User> usuarios = user.listar();
+                              //  HashMap<Integer, User> usuarios = user.listar(ic.getAtributos());
                                 SendCorreo sc = new SendCorreo();
-                                sc.enviar(usuarios, destinatario);
+                              //  sc.enviar(usuarios, destinatario);
                             }
                         } else {
 //Mensaje de error
