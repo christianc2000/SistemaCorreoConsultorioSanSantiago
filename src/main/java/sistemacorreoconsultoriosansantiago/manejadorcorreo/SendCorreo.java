@@ -21,12 +21,13 @@ import sistemaconsultoriosansantiago.datos.User;
  * @author Christian
  */
 public class SendCorreo {
+
     Dotenv dotenv = Dotenv.load();
     private final String user = dotenv.get("GMAIL_USER");//"infodevdevs@gmail.com";
     private final String pass = dotenv.get("GMAIL_PASS");
-    
-    public void enviar(String titulo[], HashMap<Integer, Object> users, String destinatario){
-          Properties props = new Properties();
+
+    public void enviar(String titulo[], HashMap<Integer, Object> object, String destinatario) {
+        Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
@@ -47,8 +48,8 @@ public class SendCorreo {
             message.setFrom(new InternetAddress(user));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
             message.setSubject("Listar Usuario");
-            
-            String html = new Respuesta().generarTablaHTML(titulo,users);
+
+            String html = new Respuesta().generarTablaHTML(titulo, object);
 
             message.setContent(html, "text/html; charset=utf-8");
             // Enviar el mensaje

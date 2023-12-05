@@ -24,15 +24,15 @@ public class Cita {
     private String fechaCita;
     private String estadoCita;
     private String costoCita;
-    private int pacienteId;
-    private int medicoId;
+    private String pacienteId;
+    private String medicoId;
 
     java.sql.Statement st;
     ResultSet rs;
     DB db = new DB();
 
     // Constructor
-    public Cita(String id, String estadoCita, String costoCita, String fechaCita, int pacienteId, int medicoId) {
+    public Cita(String id, String estadoCita, String costoCita, String fechaCita, String pacienteId, String medicoId) {
         this.id = id;
         this.fechaCita = fechaCita;
         this.estadoCita = estadoCita;
@@ -46,8 +46,8 @@ public class Cita {
         this.fechaCita = "";
         this.estadoCita = "";
         this.costoCita = "";
-        this.pacienteId = 0;
-        this.medicoId = 0;
+        this.pacienteId = "";
+        this.medicoId = "";
     }
 
     // Getters y setters (puedes generarlos automáticamente en muchos IDEs)
@@ -83,19 +83,19 @@ public class Cita {
         this.costoCita = costoCita;
     }
 
-    public int getPacienteId() {
+    public String getPacienteId() {
         return pacienteId;
     }
 
-    public int getMedicoId() {
+    public String getMedicoId() {
         return medicoId;
     }
 
-    public void setPacienteId(int pacienteId) {
+    public void setPacienteId(String pacienteId) {
         this.pacienteId = pacienteId;
     }
 
-    public void setMedicoId(int medicoId) {
+    public void setMedicoId(String medicoId) {
         this.medicoId = medicoId;
     }
 
@@ -147,8 +147,8 @@ public class Cita {
                     cita.fechaCita = rs.getString("fechaCita");
                     cita.estadoCita = rs.getString("estadoCita");
                     cita.costoCita = rs.getString("costoCita");
-                    cita.pacienteId = rs.getInt("pacienteId");
-                    cita.medicoId = rs.getInt("medicoId");
+                    cita.pacienteId = rs.getString("pacienteId");
+                    cita.medicoId = rs.getString("medicoId");
                    
                     System.out.println("fechaCita: " + cita.fechaCita);
                     System.out.println("estadoCita: " + cita.estadoCita);
@@ -172,7 +172,7 @@ public class Cita {
     
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();
-        Field[] fields = User.class.getDeclaredFields();
+        Field[] fields = Cita.class.getDeclaredFields();
 
         for (Field field : fields) {
             String nombreAtributo = field.getName();
