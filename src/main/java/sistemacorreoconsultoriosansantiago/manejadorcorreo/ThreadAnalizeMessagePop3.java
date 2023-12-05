@@ -103,7 +103,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                         System.out.println("titulo " + i + ": " + tituloTurno[i]);
                                     }
 
-                                    sc.enviar(tituloTurno, turnos, destinatario);
+                                    sc.enviar(tituloTurno, turnos, destinatario,turno.tituloListar());
                                 } else {
                                     System.out.println("ENVIAR ERROR QUE ESTÁ VACÍO");
                                 }
@@ -122,7 +122,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                         System.out.println("titulo " + i + ": " + tituloServicio[i]);
                                     }
 
-                                    sc.enviar(tituloServicio, servicios, destinatario);
+                                    sc.enviar(tituloServicio, servicios, destinatario,servicio.tituloListar());
                                 } else {
                                     System.out.println("ENVIAR ERROR QUE ESTÁ VACÍO");
                                 }

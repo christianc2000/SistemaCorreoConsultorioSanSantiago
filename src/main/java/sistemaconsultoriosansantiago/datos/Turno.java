@@ -98,6 +98,14 @@ public class Turno {
     public void setDb(DB db) {
         this.db = db;
     }
+    
+     public String tituloListar() {
+        return "LISTA DE TURNO";
+    }
+
+    public String tituloInsertar() {
+        return "TURNO REGISTRADO";
+    }
   
        public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();

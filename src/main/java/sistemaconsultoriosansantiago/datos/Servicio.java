@@ -84,6 +84,14 @@ public class Servicio {
         this.atencion = atencion;
     }
 
+     public String tituloListar() {
+        return "LISTA DE SERVICIO";
+    }
+
+    public String tituloInsertar() {
+        return "SERVICIO REGISTRADO";
+    }
+    
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();
         Field[] fields = Servicio.class.getDeclaredFields();
