@@ -64,6 +64,7 @@ public class User {
         this.ocupacion = ocupacion;
     }
 
+
     public User() {
         this.id = null;
         this.ci = null;
@@ -243,6 +244,13 @@ public class User {
         return "USUARIO REGISTRADA";
     }
 
+    public String sintaxisListar() {
+        return "LIST[\"users\"]";
+    }
+
+    public String sintaxisInsertar() {
+        return "INSERT[\"users\":\"ci\"=\"String\",\"nombre\"=\"String\",\"apellido\"=\"String\",\"fechaNacimiento\"=\"Date\",\"celular\"=\"int\",\"tipo\"=\"String\",\"genero\"=\"String\",\"residenciaActual\"=\"String\",\"email\"=\"String\",\"password\"=\"String\",\"urlFoto\"=\"String\",\"formacion\"=\"String\",\"sueldo\"=\"int\",\"hijo\"=\"int\",\"ocupacion\"=\"String\"];";
+    }
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();
         Field[] fields = User.class.getDeclaredFields();

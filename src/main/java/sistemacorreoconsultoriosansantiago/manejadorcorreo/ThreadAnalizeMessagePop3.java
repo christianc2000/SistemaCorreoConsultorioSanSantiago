@@ -53,7 +53,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                     System.out.println("titulo " + i + ": " + tituloUsuario[i]);
                                 }
 
-                                sc.enviar(tituloUsuario, usuarios, destinatario, user.tituloListar());
+                                sc.enviar(tituloUsuario, usuarios, destinatario, user.tituloListar(), user.sintaxisInsertar(), "Insertar Usuario");
 
                                 break;
                             case "consultas":
@@ -67,7 +67,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                     System.out.println("titulo " + i + ": " + tituloConsulta[i]);
                                 }
 
-                                sc.enviar(tituloConsulta, consultas, destinatario, consulta.tituloListar());
+                                sc.enviar(tituloConsulta, consultas, destinatario, consulta.tituloListar(), consulta.sintaxisInsertar(), "Insertar Consulta");
                                 break;
 
                             case "reportes":
@@ -82,7 +82,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                         System.out.println("titulo " + i + ": " + tituloReporte[i]);
                                     }
 
-                                    sc.enviar(tituloReporte, reportes, destinatario, reporte.tituloListar());
+                                    sc.enviar(tituloReporte, reportes, destinatario, reporte.tituloListar(), reporte.sintaxisInsertar(), "Insertar Reporte");
                                 } else {
                                     System.out.println("ENVIAR ERROR QUE ESTÁ VACÍO");
                                 }
@@ -123,7 +123,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                 if (useri.size() > 0) {
                                     User primerUser = (User) useri.get(1);
                                     String[] tituloUser = primerUser.getAtributos();
-                                    sc.enviar(tituloUser, useri, destinatario, user.tituloInsertar());
+                                    sc.enviar(tituloUser, useri, destinatario, user.tituloInsertar(), user.sintaxisListar(), "Listar Usuario");
                                 } else {
                                     System.out.println("ERROR NO SE REGISTRÓ ");
                                 }
@@ -146,7 +146,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                 if (consultai.size() > 0) {
                                     Consulta primerConsulta = (Consulta) consultai.get(1);
                                     String[] tituloConsulta = primerConsulta.getAtributos();
-                                    sc.enviar(tituloConsulta, consultai, destinatario, consulta.tituloInsertar());
+                                    sc.enviar(tituloConsulta, consultai, destinatario, consulta.tituloInsertar(), consulta.sintaxisListar(), "Listar consultas");
                                 } else {
                                     System.out.println("ERROR NO SE REGISTRÓ ");
                                 }
@@ -170,7 +170,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                 if (reportei.size() > 0) {
                                     Reporte primerReporte = (Reporte) reportei.get(1);
                                     String[] tituloReporte = primerReporte.getAtributos();
-                                    sc.enviar(tituloReporte, reportei, destinatario, reporte.tituloInsertar());
+                                    sc.enviar(tituloReporte, reportei, destinatario, reporte.tituloInsertar(), reporte.sintaxisListar(), "Listar Reportes");
                                 } else {
                                     System.out.println("ERROR NO SE REGISTRÓ ");
                                 }

@@ -122,6 +122,14 @@ public class Reporte {
         return "REPORTE REGISTRADO";
     }
 
+    public String sintaxisListar() {
+        return "LIST[\"reportes\"]";
+    }
+
+    public String sintaxisInsertar() {
+        return "INSERT[\"reportes\":\"urlDocumento\"=\"String\",\"fechaReporte\"=\"String\",\"userId\"=\"int\"];";
+    }
+
     public HashMap<Integer, Object> listar(String atributos[]) {
         HashMap<Integer, Object> consultas = new HashMap<>();
         int nullIdKey = 1; // Clave para usuarios sin id
@@ -169,12 +177,11 @@ public class Reporte {
 
         return consultas;
     }
-    
+
     public HashMap<Integer, Object> insertar(Reporte reporte) {
         HashMap<Integer, Object> reportes = new HashMap<>();
         int nullIdKey = 1;
 
-       
         try {
             Connection connection = db.establecerConexion();
             String sql = "INSERT INTO reportes ( \"fechaReporte\", \"urlDocumento\", \"userId\") VALUES (?, ?, ?)";

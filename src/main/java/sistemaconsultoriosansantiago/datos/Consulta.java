@@ -124,6 +124,14 @@ public class Consulta {
         this.db = db;
     }
 
+    public String sintaxisListar() {
+        return "LIST[\"consultas\"]";
+    }
+
+    public String sintaxisInsertar() {
+        return "INSERT[\"consultas\":\"fecha\"=\"Date\",\"motivo\"=\"String\",\"examenFisico\"=\"String\",\"observaciones\"=\"String\",\"diagnostico\"=\"String\",\"historialId\"=\"int\",\"genero\"=\"F\",\"residenciaActual\"=\"Los Pozitos Santa Cruz\",\"email\"=\"tania01@gmail.com\",\"password\"=\"12345678\",\"urlFoto\"=\"fototania.png\",\"formacion\"=\"NO\",\"sueldo\"=\"0\",\"hijo\"=\"0\",\"ocupacion\"=\"Estudiante universitario\"];";
+    }
+
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();
         Field[] fields = Consulta.class.getDeclaredFields();

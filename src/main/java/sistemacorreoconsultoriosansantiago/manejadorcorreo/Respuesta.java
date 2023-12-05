@@ -16,7 +16,7 @@ import sistemaconsultoriosansantiago.datos.User;
  */
 public class Respuesta {
 
-    public String generarTablaHTML(String cabezera[], HashMap<Integer, Object> Objeto, String titulo) {
+    public String generarTablaHTML(String cabezera[], HashMap<Integer, Object> Objeto, String titulo, String insertar, String accion) {
         StringBuilder html = new StringBuilder();
 
         html.append("<!DOCTYPE html>\n");
@@ -27,6 +27,7 @@ public class Respuesta {
         html.append("th, td {border: 1px solid black;padding: 8px;text-align: left;}\n");
         html.append("</style>\n");
         html.append("</head>\n");
+        html.append("<a href=\"mailto:grupo01sc@tecnoweb.org.bo?subject=Listar&body=").append(insertar).append("\">\n").append("<button>").append(accion).append("</button>\n").append("</a>");
         html.append("<body>\n");
         html.append("<h1>").append(titulo).append("</h1>");
         html.append("<table>\n");
