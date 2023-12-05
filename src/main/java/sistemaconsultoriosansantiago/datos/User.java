@@ -6,12 +6,16 @@ package sistemaconsultoriosansantiago.datos;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Date;
 
 /**
  *
@@ -231,6 +235,14 @@ public class User {
         this.db = db;
     }
 
+    public String tituloListar() {
+        return "LISTA DE USUARIOS";
+    }
+
+    public String tituloInsertar() {
+        return "USUARIO REGISTRADA";
+    }
+
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();
         Field[] fields = User.class.getDeclaredFields();
@@ -315,4 +327,63 @@ public class User {
         return usuarios;
     }
 
+    public HashMap<Integer, Object> insertar(User user) {
+        HashMap<Integer, Object> users = new HashMap<>();
+        int nullIdKey = 1;
+
+        try {
+            Connection connection = db.establecerConexion();
+            String sql = "INSERT INTO users ( \"ci\", \"nombre\", \"apellido\", \"fechaNacimiento\", \"celular\", \"tipo\", \"genero\", \"residenciaActual\", \"email\", \"password\", \"urlFoto\", \"formacion\", \"sueldo\", \"hijo\", \"ocupacion\") VALUES (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, user.getCi());
+            preparedStatement.setString(2, user.getNombre());
+            preparedStatement.setString(3, user.getApellido());
+            preparedStatement.setDate(4, convertStringToSqlDate(user.getFechaNacimiento()));
+            preparedStatement.setInt(5, Integer.parseInt(user.getCelular()));
+            preparedStatement.setString(6, user.getTipo());
+            preparedStatement.setString(7, user.getGenero());
+            preparedStatement.setString(8, user.getResidenciaActual());
+            preparedStatement.setString(9, user.getEmail());
+            preparedStatement.setString(10, user.getPassword());
+            preparedStatement.setString(11, user.getUrlFoto());
+            preparedStatement.setString(12, user.getFormacion());
+            preparedStatement.setDouble(13, Double.parseDouble(user.getSueldo()));
+            preparedStatement.setInt(14, Integer.parseInt(user.getHijo()));
+            preparedStatement.setString(15, user.getOcupacion());
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("La creación del users falló, no se insertaron filas.");
+            }
+
+            try ( ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    user.id = generatedKeys.getString(1);
+                } else {
+                    throw new SQLException("La creación del user falló, no se obtuvo el ID.");
+                }
+            }
+
+            connection.close();
+            users.put(nullIdKey++, user);
+            return users;
+        } catch (SQLException e) {
+            System.out.println("Error al conectar a la Base de datos: " + e.toString());
+            return null;
+        }
+    }
+
+    public static java.sql.Date convertStringToSqlDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date utilDate = dateFormat.parse(dateString);
+            // Convert java.util.Date to java.sql.Date
+            return new java.sql.Date(utilDate.getTime());
+        } catch (ParseException e) {
+            // Handle the ParseException (e.g., log it, throw a specific exception, etc.)
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

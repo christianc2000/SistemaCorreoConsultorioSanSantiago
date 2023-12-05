@@ -16,7 +16,7 @@ import sistemaconsultoriosansantiago.datos.User;
  */
 public class Respuesta {
 
-    public String generarTablaHTML(String titulo[], HashMap<Integer, Object> Objeto) {
+    public String generarTablaHTML(String cabezera[], HashMap<Integer, Object> Objeto, String titulo) {
         StringBuilder html = new StringBuilder();
 
         html.append("<!DOCTYPE html>\n");
@@ -28,16 +28,17 @@ public class Respuesta {
         html.append("</style>\n");
         html.append("</head>\n");
         html.append("<body>\n");
+        html.append("<h1>").append(titulo).append("</h1>");
         html.append("<table>\n");
         html.append("<tr>");
-        for (int i = 0; i < titulo.length; i++) {
-            html.append("<th>").append(titulo[i]).append("</th>");
+        for (int i = 0; i < cabezera.length; i++) {
+            html.append("<th>").append(cabezera[i]).append("</th>");
         }
         html.append("</tr>");
 
         for (Object obj : Objeto.values()) {
             html.append("<tr>");
-            for (String atributo : titulo) {
+            for (String atributo : cabezera) {
 
                 try {
                     Field field = obj.getClass().getDeclaredField(atributo);
