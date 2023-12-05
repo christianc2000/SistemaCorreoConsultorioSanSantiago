@@ -11,6 +11,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMultipart;
 import sistemaconsultoriosansantiago.datos.Consulta;
 import sistemaconsultoriosansantiago.datos.Reporte;
+import sistemaconsultoriosansantiago.datos.Servicio;
+import sistemaconsultoriosansantiago.datos.Turno;
 import sistemaconsultoriosansantiago.datos.User;
 import sistemacorreoconsultoriosansantiago.Analizador.AnalizarSintaxis;
 import sistemacorreoconsultoriosansantiago.Analizador.InformacionComando;
@@ -81,6 +83,44 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                     }
 
                                     sc.enviar(tituloReporte, reportes, destinatario);
+                                } else {
+                                    System.out.println("ENVIAR ERROR QUE ESTÁ VACÍO");
+                                }
+
+                                break;
+
+                            case "turnos":
+                                Turno turno = new Turno();
+                                //System.out.println("atributos: " + ic.getAtributos()[0]);
+                                HashMap<Integer, Object> turnos = turno.listar(ic.getAtributos());
+                                if (turnos.size() > 0) {
+                                    Turno primerTurno = (Turno) turnos.get(1);
+                                    String[] tituloTurno = primerTurno.getAtributos();
+
+                                    for (int i = 0; i < tituloTurno.length; i++) {
+                                        System.out.println("titulo " + i + ": " + tituloTurno[i]);
+                                    }
+
+                                    sc.enviar(tituloTurno, turnos, destinatario);
+                                } else {
+                                    System.out.println("ENVIAR ERROR QUE ESTÁ VACÍO");
+                                }
+
+                                break;
+
+                            case "servicios":
+                                Servicio servicio = new Servicio();
+                                //System.out.println("atributos: " + ic.getAtributos()[0]);
+                                HashMap<Integer, Object> servicios = servicio.listar(ic.getAtributos());
+                                if (servicios.size() > 0) {
+                                    Servicio primerServicio = (Servicio) servicios.get(1);
+                                    String[] tituloServicio = primerServicio.getAtributos();
+
+                                    for (int i = 0; i < tituloServicio.length; i++) {
+                                        System.out.println("titulo " + i + ": " + tituloServicio[i]);
+                                    }
+
+                                    sc.enviar(tituloServicio, servicios, destinatario);
                                 } else {
                                     System.out.println("ENVIAR ERROR QUE ESTÁ VACÍO");
                                 }
