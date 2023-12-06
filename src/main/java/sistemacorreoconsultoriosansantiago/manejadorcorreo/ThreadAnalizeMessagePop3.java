@@ -12,7 +12,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMultipart;
 import sistemaconsultoriosansantiago.datos.Cita;
 import sistemaconsultoriosansantiago.datos.Consulta;
+import sistemaconsultoriosansantiago.datos.Historial;
 import sistemaconsultoriosansantiago.datos.Reporte;
+//import sistemaconsultoriosansantiago.datos.Servicio;
+//import sistemaconsultoriosansantiago.datos.Turno;
 import sistemaconsultoriosansantiago.datos.User;
 import sistemacorreoconsultoriosansantiago.Analizador.AnalizarSintaxis;
 import sistemacorreoconsultoriosansantiago.Analizador.AtributoValor;
@@ -85,7 +88,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
 
                                     sc.enviar(tituloReporte, reportes, destinatario, reporte.tituloListar());
                                 } else {
-                                    System.out.println("ENVIAR ERROR QUE ESTÁ VACÍO");
+                                    System.out.println("ENVIAR ERROR QUE EST�? VAC�?O");
                                 }
                                 break;
 
@@ -100,8 +103,60 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                     System.out.println("titulo " + i + ": " + tituloCita[i]);
                                 }
                                
-                                sc.enviar(tituloCita, citas, destinatario);
+                                sc.enviar(tituloCita, citas, destinatario, cita.tituloListar());
                                 break;
+
+                            case "historials":
+                                Historial historial = new Historial();
+                                //System.out.println("atributos: " + ic.getAtributos()[0]);
+                                HashMap<Integer, Object> historials = historial.listar(ic.getAtributos());
+                                Historial primerHistorial = (Historial) historials.get(1);
+                                String[] tituloHistorial = primerHistorial.getAtributos();
+
+                                for (int i = 0; i < tituloHistorial.length; i++) {
+                                    System.out.println("titulo " + i + ": " + tituloHistorial[i]);
+                                }
+
+                                sc.enviar(tituloHistorial, historials, destinatario, historial.tituloListar());
+
+                            break;
+//                            case "turnos":
+//                                Turno turno = new Turno();
+//                                //System.out.println("atributos: " + ic.getAtributos()[0]);
+//                                HashMap<Integer, Object> turnos = turno.listar(ic.getAtributos());
+//                                if (turnos.size() > 0) {
+//                                    Turno primerTurno = (Turno) turnos.get(1);
+//                                    String[] tituloTurno = primerTurno.getAtributos();
+//
+//                                    for (int i = 0; i < tituloTurno.length; i++) {
+//                                        System.out.println("titulo " + i + ": " + tituloTurno[i]);
+//                                    }
+//
+//                                    sc.enviar(tituloTurno, turnos, destinatario,turno.tituloListar());
+//                                } else {
+//                                    System.out.println("ENVIAR ERROR QUE EST�? VAC�?O");
+//                                }
+//
+//                                break;
+
+//                            case "servicios":
+//                                Servicio servicio = new Servicio();
+//                                //System.out.println("atributos: " + ic.getAtributos()[0]);
+//                                HashMap<Integer, Object> servicios = servicio.listar(ic.getAtributos());
+//                                if (servicios.size() > 0) {
+//                                    Servicio primerServicio = (Servicio) servicios.get(1);
+//                                    String[] tituloServicio = primerServicio.getAtributos();
+//
+//                                    for (int i = 0; i < tituloServicio.length; i++) {
+//                                        System.out.println("titulo " + i + ": " + tituloServicio[i]);
+//                                    }
+//
+//                                    sc.enviar(tituloServicio, servicios, destinatario,servicio.tituloListar());
+//                                } else {
+//                                    System.out.println("ENVIAR ERROR QUE EST�? VAC�?O");
+//                                }
+//
+//                                break;
                             default:
                                 throw new AssertionError();
                         }
@@ -190,7 +245,52 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                 }
 
                                 break;
+                            case "historials":
+                                   System.out.println("igresaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                                HashMap<String, String> atrvh = a.convertAtributoValorHashMap(ic.getAtributos());
+                                for (Map.Entry<String, String> entry : atrvh.entrySet()) {
+                                    System.out.print("atributo: " + entry.getKey() + "= ");
+                                    System.out.println("valor: " + entry.getValue());
 
+                                }
+                                System.out.println("hasta aca bien");
+                                Historial historial = new Historial();
+                                historial.setNombrePaciente(atrvh.get("nombrePaciente"));
+                                historial.setPacienteId(atrvh.get("pacienteId"));
+                                HashMap<Integer, Object> historial1 = historial.insertar(historial);
+                                                                System.out.println("hasta aca tanbienbien");
+
+                                if (historial1.size() > 0) {
+                                    Historial primerHistorial = (Historial) historial1.get(1);
+                                    String[] tituloHistorial = primerHistorial.getAtributos();
+                                    sc.enviar(tituloHistorial, historial1, destinatario, historial.tituloInsertar());
+                                } else {
+                                    System.out.println("ERROR NO SE REGISTRÓ ");
+                                }
+                                break;
+                            case "citas":
+                                
+                                HashMap<String, String> atrvci = a.convertAtributoValorHashMap(ic.getAtributos());
+                                for (Map.Entry<String, String> entry : atrvci.entrySet()) {
+                                    System.out.print("atributo: " + entry.getKey() + "= ");
+                                    System.out.println("valor: " + entry.getValue());
+
+                                }
+                                Cita cita = new Cita();
+                                cita.setFechaCita(atrvci.get("fechaCita"));
+                                cita.setEstadoCita(atrvci.get("estadoCita"));
+                                cita.setCostoCita(atrvci.get("costoCita"));
+                                cita.setPacienteId(atrvci.get("pacienteId"));
+                                cita.setMedicoId(atrvci.get("medicoId"));
+                                HashMap<Integer, Object> cita1 = cita.insertar(cita);
+                                if (cita1.size() > 0) {
+                                    Cita primerCita = (Cita) cita1.get(1);
+                                    String[] tituloCital = primerCita.getAtributos();
+                                    sc.enviar(tituloCital, cita1, destinatario, cita.tituloInsertar());
+                                } else {
+                                    System.out.println("ERROR NO SE REGISTRÓ ");
+                                }
+                                break;
                             default:
                                 throw new AssertionError();
                         }

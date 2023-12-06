@@ -6,9 +6,12 @@ package sistemaconsultoriosansantiago.datos;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -99,21 +102,59 @@ public class Cita {
         this.medicoId = medicoId;
     }
 
-
-
     public Statement getSt() {
         return st;
+    }
+
+    public void setSt(Statement st) {
+        this.st = st;
     }
 
     public ResultSet getRs() {
         return rs;
     }
 
+    public void setRs(ResultSet rs) {
+        this.rs = rs;
+    }
+
     public DB getDb() {
         return db;
     }
 
-   
+    public void setDb(DB db) {
+        this.db = db;
+    }
+
+    public String tituloListar() {
+        return "LISTA DE CITAS";
+    }
+
+    public String tituloInsertar() {
+        return "CITA REGISTRADA";
+    }
+    
+    public String[] getAtributos() {
+        ArrayList<String> atributosConValor = new ArrayList<>();
+        Field[] fields = Cita.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            String nombreAtributo = field.getName();
+            if (!nombreAtributo.equals("st") && !nombreAtributo.equals("rs") && !nombreAtributo.equals("db")) {
+                field.setAccessible(true);
+                try {
+                    if (field.get(this) != null) {
+                        atributosConValor.add(nombreAtributo);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return atributosConValor.toArray(new String[0]);
+    }
+    
     public HashMap<Integer, Object> listar(String atributos[]) {
         HashMap<Integer, Object> citas = new HashMap<>();
         int nullIdKey = 1; // Clave para usuarios sin id
@@ -137,7 +178,7 @@ public class Cita {
                 Cita cita = new Cita();
                 if (atributos != null) {
                     for (String atributo : atributos) {
-                        Field field = User.class.getDeclaredField(atributo);
+                        Field field = Cita.class.getDeclaredField(atributo);
                         field.setAccessible(true);
                         field.set(cita, rs.getString(atributo));
                     }
@@ -169,25 +210,53 @@ public class Cita {
         return citas;
     }
     
-    
-    public String[] getAtributos() {
-        ArrayList<String> atributosConValor = new ArrayList<>();
-        Field[] fields = Cita.class.getDeclaredFields();
+    public HashMap<Integer, Object> insertar(Cita cita) {
+        HashMap<Integer, Object> citas = new HashMap<>();
+        int nullIdKey = 1;
 
-        for (Field field : fields) {
-            String nombreAtributo = field.getName();
-            if (!nombreAtributo.equals("st") && !nombreAtributo.equals("rs") && !nombreAtributo.equals("db")) {
-                field.setAccessible(true);
-                try {
-                    if (field.get(this) != null) {
-                        atributosConValor.add(nombreAtributo);
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+        try {
+            Connection connection = db.establecerConexion();
+            String sql = "INSERT INTO citas ( \"fechaCita\", \"estadoCita\",\"costoCita\", \"pacienteId\",\"medicoId\") VALUES (?, ?, ?, ?, ?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, cita.getFechaCita());
+            preparedStatement.setInt(5, Integer.parseInt(cita.getEstadoCita()));
+            preparedStatement.setInt(5, Integer.parseInt(cita.getCostoCita()));
+            preparedStatement.setInt(5, Integer.parseInt(cita.getPacienteId()));
+            preparedStatement.setInt(5, Integer.parseInt(cita.getMedicoId()));
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("La creación del users falló, no se insertaron filas.");
+            }
+
+            try ( ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    cita.id = generatedKeys.getString(1);
+                } else {
+                    throw new SQLException("La creación de la cita falló, no se obtuvo el ID.");
                 }
             }
-        }
 
-        return atributosConValor.toArray(new String[0]);
+            connection.close();
+            citas.put(nullIdKey++, cita);
+            return citas;
+        } catch (SQLException e) {
+            System.out.println("Error al conectar a la Base de datos: " + e.toString());
+            return null;
+        }
+    }
+    
+     public static java.sql.Date convertStringToSqlDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date utilDate = dateFormat.parse(dateString);
+            // Convert java.util.Date to java.sql.Date
+            return new java.sql.Date(utilDate.getTime());
+        } catch (ParseException e) {
+            // Handle the ParseException (e.g., log it, throw a specific exception, etc.)
+            e.printStackTrace();
+            return null;
+        }
     }
 }
