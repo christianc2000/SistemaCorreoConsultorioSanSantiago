@@ -42,10 +42,10 @@ public class ManejadorCorreo {
             
             IMAPFolder inbox = (IMAPFolder) store.getFolder("INBOX");
             inbox.open(Folder.READ_WRITE);
-            
             inbox.addMessageCountListener(new MessageCountAdapter() {
                 public void messagesAdded(MessageCountEvent ev) {
                     Message[] messages = ev.getMessages();
+                    System.out.println(messages);
                     for (Message message : messages) {
                         // Crea un nuevo hilo para cada mensaje
                         Thread thread = new Thread(new ThreadAnalizeMessage(message));
