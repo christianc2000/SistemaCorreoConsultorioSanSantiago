@@ -6,11 +6,13 @@ package sistemaconsultoriosansantiago.datos;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import static sistemaconsultoriosansantiago.datos.User.convertStringToSqlDate;
 
 /**
  *
@@ -93,11 +95,11 @@ public class Servicio {
     }
     
      public String sintaxisListar() {
-        return "LIST[\"servicios\"]";
+        return "LIST%5B%22servicios%22%5D;";
     }
 
     public String sintaxisInsertar() {
-        return "INSERT[\"servicios\":\"nombre\"=\"String\",\"costo\"=\"float\",\"formaCompra\"=\"String\",\"atencion\"=\"String\"];";
+        return "INSERT[%22servicios%22:%22nombre%22=%22String%22,%22costo%22=%22String%22,%22formaCompra%22=%22ONLINE%22,%22atencion%22=%22String%22];";
     }
     
     public String[] getAtributos() {
@@ -170,5 +172,40 @@ public class Servicio {
 
         return servicios;
     }
+public HashMap<Integer, Object> insertar(Servicio servicio) {
+        HashMap<Integer, Object> servicios = new HashMap<>();
+        int nullIdKey = 1;
 
+        try {
+            Connection connection = db.establecerConexion();
+            String sql = "INSERT INTO servicios ( \"nombre\", \"costo\", \"formaCompra\", \"atencion\") VALUES (?, ?, ?,?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, servicio.getNombre());
+            preparedStatement.setDouble(2, Double.parseDouble(servicio.getCosto()));
+            preparedStatement.setString(3, servicio.getFormaCompra());
+            preparedStatement.setString(4, servicio.getAtencion());
+           
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("La creación del servicio falló, no se insertaron filas.");
+            }
+
+            try ( ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    servicio.id = generatedKeys.getString(1);
+                } else {
+                    throw new SQLException("La creación del servicio falló, no se obtuvo el ID.");
+                }
+            }
+
+            connection.close();
+            servicios.put(nullIdKey++, servicio);
+            return servicios;
+        } catch (SQLException e) {
+            System.out.println("Error al conectar a la Base de datos: " + e.toString());
+            return null;
+        }
+    }
 }

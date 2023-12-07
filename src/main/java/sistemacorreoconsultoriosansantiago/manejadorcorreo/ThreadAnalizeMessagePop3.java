@@ -172,6 +172,30 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                             System.out.println("INGRESA A INSERTAR");
                             AtributoValor a = new AtributoValor();
                             switch (ic.getTabla()) {
+                                case "servicios":
+                                  HashMap<String, String> atrvs = a.convertAtributoValorHashMap(ic.getAtributos());
+                                    for (Map.Entry<String, String> entry : atrvs.entrySet()) {
+                                        System.out.print("atributo: " + entry.getKey() + "= ");
+                                        System.out.println("valor: " + entry.getValue());
+
+                                    }
+                                    Servicio servicio = new Servicio();
+                                    servicio.setNombre(atrvs.get("nombre"));
+                                    servicio.setCosto(atrvs.get("costo"));
+                                    servicio.setFormaCompra(atrvs.get("formaCompra"));
+                                    servicio.setAtencion(atrvs.get("atencion"));
+                                  
+                                    
+                                    HashMap<Integer, Object> servicioi = servicio.insertar(servicio);
+                                    if (servicioi.size() > 0) {
+                                        System.out.println("servicio 1: "+servicioi.get(1));
+                                        Servicio primerServicio = (Servicio) servicioi.get(1);
+                                        String[] tituloServicio = primerServicio.getAtributos();
+                                        sc.enviar(tituloServicio, servicioi, destinatario, servicio.tituloInsertar(), servicio.sintaxisListar(), "Listar Servicio");
+                                    } else {
+                                        System.out.println("ERROR NO SE REGISTRÓ ");
+                                    }
+                                break;
                                 case "users":
                                     HashMap<String, String> atrvu = a.convertAtributoValorHashMap(ic.getAtributos());
                                     for (Map.Entry<String, String> entry : atrvu.entrySet()) {

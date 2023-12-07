@@ -99,6 +99,7 @@ public class Respuesta {
         html.append("<div class=\"container\">\n");
         html.append("<h1 class=\"text-center mb-4\">").append(titulo).append("</h1>\n");
         html.append("<a class=\"btn btn-primary\" href=\"mailto:grupo01sc@tecnoweb.org.bo?subject=Listar&body=").append(insertar).append("\"><button>").append(accion).append("</button></a>");
+        html.append("<a class=\"btn btn-primary\" href=\"mailto:grupo01sc@tecnoweb.org.bo?subject=Listar&body=[%22").append("INICIAR").append("%22];\" class=\"grid-item\">\n").append("<button>").append("INICIAR").append("</button>\n").append("</a>");
         html.append("<table>\n");
         html.append("<thead>\n");
         html.append("<tr>\n");
@@ -244,4 +245,22 @@ public class Respuesta {
 
         return html.toString();
     }
+
+    public String generarHTMLHelp() {
+        StringBuilder html = new StringBuilder();
+
+        html.append("<html><head><title>Comandos Disponibles</title></head><body>");
+        html.append("<h1>Comandos Disponibles</h1>");
+        html.append("<p>Puede utilizar los siguientes comandos:</p>");
+        html.append("<ul>");
+        html.append("<li>INICIAR</li>");
+        html.append("<li>LIST[\"tabla\"]</li>");
+        html.append("<li>LIST[\"tabla\":\"atr1\",\"atr2\",...,\"atrn\"]</li>");
+        html.append("<li>INSERT[\"tabla\":\"atr1\"=\"val1\",\"atr2\"=\"val2\",...,\"atrn\"=\"valn\"]</li>");
+        html.append("</ul>");
+        html.append("</body></html>");
+
+        return html.toString();
+    }
+
 }
