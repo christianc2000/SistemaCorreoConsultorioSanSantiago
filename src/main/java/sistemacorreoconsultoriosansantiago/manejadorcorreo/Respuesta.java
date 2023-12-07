@@ -99,7 +99,7 @@ public class Respuesta {
         html.append("<div class=\"container\">\n");
         html.append("<h1 class=\"text-center mb-4\">").append(titulo).append("</h1>\n");
         html.append("<a class=\"btn btn-primary\" href=\"mailto:grupo01sc@tecnoweb.org.bo?subject=Listar&body=").append(insertar).append("\"><button>").append(accion).append("</button></a>");
-        html.append("<a class=\"btn btn-primary\" href=\"mailto:grupo01sc@tecnoweb.org.bo?subject=Listar&body=[%22").append("INICIAR").append("%22];\" class=\"grid-item\">\n").append("<button>").append("INICIAR").append("</button>\n").append("</a>");
+        html.append("<a class=\"btn btn-primary\" href=\"mailto:grupo01sc@tecnoweb.org.bo?subject=Listar&body=[%22").append("INICIAR").append("%22];\" class=\"grid-item\">\n").append("<button>").append("INICIO").append("</button>\n").append("</a>");
         html.append("<table>\n");
         html.append("<thead>\n");
         html.append("<tr>\n");
@@ -153,19 +153,6 @@ public class Respuesta {
         html.append("</html>");
 
         return html.toString();
-    }
-
-    public String convertirFormato() {
-        String body = String.join(", ", "users"); // Convertir la lista a un solo String
-        String subject = "Subject";
-        String mailto = "https://mail.google.com/mail/?view=cm&fs=1&to=";
-
-        String uriStr = String.format("%s&su=%s&body=%s",
-                mailto,
-                URLEncoder.encode(subject, StandardCharsets.UTF_8),
-                URLEncoder.encode(body, StandardCharsets.UTF_8)
-        );
-        return uriStr;
     }
 
     public String generarHTML() {
@@ -246,10 +233,29 @@ public class Respuesta {
         return html.toString();
     }
 
-    public String generarHTMLHelp() {
+    public String generarVistaComandos() {
         StringBuilder html = new StringBuilder();
 
-        html.append("<html><head><title>Comandos Disponibles</title></head><body>");
+        html.append("<html><head>");
+        html.append("<title>Comandos y Error de Sintaxis</title>");
+        html.append("<style>");
+        html.append("body { font-family: Arial, sans-serif; background-color: #f9f9f9; color: #333; margin: 0; padding: 0; }");
+        html.append(".container { max-width: 600px; margin: 0 auto; padding: 20px; }");
+        html.append("h1 { color: #d9534f; }");
+        html.append("p { color: #333; }");
+        html.append("ul { list-style-type: none; padding: 0; }");
+        html.append("li { margin-bottom: 10px; }");
+        html.append("</style>");
+        html.append("</head><body>");
+        html.append("<a class=\"btn btn-primary\" href=\"mailto:grupo01sc@tecnoweb.org.bo?subject=Listar&body=[%22").append("INICIAR").append("%22];\" class=\"grid-item\">\n").append("<button>").append("INICIO").append("</button>\n").append("</a>");
+        // Mensaje de Error de Sintaxis
+        html.append("<div class=\"container\">");
+        html.append("<h1>Error de Sintaxis</h1>");
+        html.append("<p>La sintaxis del comando proporcionado es incorrecta.</p>");
+        html.append("</div>");
+
+        // Comandos Disponibles
+        html.append("<div class=\"container\">");
         html.append("<h1>Comandos Disponibles</h1>");
         html.append("<p>Puede utilizar los siguientes comandos:</p>");
         html.append("<ul>");
@@ -258,6 +264,8 @@ public class Respuesta {
         html.append("<li>LIST[\"tabla\":\"atr1\",\"atr2\",...,\"atrn\"]</li>");
         html.append("<li>INSERT[\"tabla\":\"atr1\"=\"val1\",\"atr2\"=\"val2\",...,\"atrn\"=\"valn\"]</li>");
         html.append("</ul>");
+        html.append("</div>");
+
         html.append("</body></html>");
 
         return html.toString();

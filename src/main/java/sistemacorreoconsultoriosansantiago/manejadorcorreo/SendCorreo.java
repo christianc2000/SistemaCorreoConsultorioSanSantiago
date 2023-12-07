@@ -50,12 +50,24 @@ public class SendCorreo {
             message.setSubject("Listar Usuario");
             System.out.println("Destinatario: " + destinatario);
             String html;
-            if (accion.equals("INICIAR")) {
-                html = new Respuesta().generarHTML();
-            } else {
-                html = new Respuesta().generarTablaHTMLBoton(cabezera, object, titulo, insertar, accion);
-                // html = new Respuesta().generarTablaHTML(cabezera, object, titulo, insertar, accion);
+            switch (accion) {
+                case "INICIAR":
+                    html = new Respuesta().generarHTML();
+                    break;
+                case "ERROR":
+
+                    html = new Respuesta().generarVistaComandos();
+                    break;
+                default:
+                    html = new Respuesta().generarTablaHTMLBoton(cabezera, object, titulo, insertar, accion);
+
             }
+            // if (accion.equals("INICIAR")) {
+            //   html = new Respuesta().generarHTML();
+            // } else {
+            // html = new Respuesta().generarTablaHTMLBoton(cabezera, object, titulo, insertar, accion);
+            // html = new Respuesta().generarTablaHTML(cabezera, object, titulo, insertar, accion);
+            // }
             message.setContent(html, "text/html; charset=utf-8");
             // Enviar el mensaje
             Transport.send(message);

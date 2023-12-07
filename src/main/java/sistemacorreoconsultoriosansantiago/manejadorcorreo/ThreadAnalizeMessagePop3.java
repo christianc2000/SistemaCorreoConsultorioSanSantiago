@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMultipart;
 import sistemaconsultoriosansantiago.datos.Cita;
 import sistemaconsultoriosansantiago.datos.Consulta;
 import sistemaconsultoriosansantiago.datos.Historial;
+import sistemaconsultoriosansantiago.datos.Pago;
 import sistemaconsultoriosansantiago.datos.Reporte;
 import sistemaconsultoriosansantiago.datos.Servicio;
 //import sistemaconsultoriosansantiago.datos.Servicio;
@@ -45,7 +46,46 @@ public class ThreadAnalizeMessagePop3 extends Thread {
             if (ic.getAccion() == "INICIAR") {
                 sc.enviar(null, null, destinatario, null, null, ic.getAccion());
 
-            } else {
+            } else if (ic.getAccion() == "PAGO") {
+                        System.out.println("INGRESA A REALIZAR PAGO POR FACIL");
+                        AtributoValor p = new AtributoValor();
+                        HashMap<String, String> atrvu = p.convertAtributoValorHashMap(ic.getAtributos());
+                        System.out.println("------------------------------------------------");
+                                for (Map.Entry<String, String> entry : atrvu.entrySet()) {
+                                    System.out.print("atributo: " + entry.getKey() + "= ");
+                                    System.out.println("valor: " + entry.getValue());
+
+                                }
+                        System.out.println("------------------------------------------------");
+                                Pago pago = new Pago();
+                                // pago.setLcComerceID(atrvu.get("lcComerceID"));
+                                // pago.setLnMoneda(atrvu.get("lnMoneda"));
+                                pago.setLnTelefono(atrvu.get("telefono"));
+                                pago.setLcRazonSocial(atrvu.get("razonSocial"));
+                                pago.setLnCiNit(atrvu.get("ciNit"));
+                                pago.setLcNroPago(atrvu.get("nroPago"));
+                                pago.setLnMontoClienteEmpresa(atrvu.get("MontoClienteEmpresa"));
+                                pago.setLcCorreo(atrvu.get("correo"));
+//                                pago.setLcUrlCallBack(atrvu.get("urlCallBack"));
+//                                pago.setLcUrlReturn(atrvu.get("urlReturn"));
+//                                pago.setLcUrl(atrvu.get("url"));
+//                                pago.setTnTipoServicio(atrvu.get("tipoServicio"));// 1 qr, 2 pago
+                                pago.setPacienteId(atrvu.get("pacienteId"));
+                                pago.setPacienteNombre(atrvu.get("pacienteNombre"));
+                                pago.setDescuento(atrvu.get("descuento"));
+                                pago.setServicioId(atrvu.get("servicioId"));
+                                pago.datosDefecto();
+                                System.out.println("lo que hay en pagoooooooooooooooooooooooooooo");
+                                System.out.println(pago.datosEnPago());
+                                pago.consumirApi();
+//                                if (pagoi.size() > 0) {
+//                                    Pago primerUser = (Pago) pagoi.get(1);
+//                                    String[] tituloPago = primerUser.getAtributos();
+//                                    sc.enviar(tituloUser, pagoi, destinatario, pago.tituloInsertar());
+//                                } else {
+//                                    System.out.println("ERROR NO SE REGISTRÓ ");
+//                                }
+            }else {
                 if (analizador.analizarTabla(ic)) {
 
                     switch (ic.getAccion()) {
@@ -146,24 +186,24 @@ public class ThreadAnalizeMessagePop3 extends Thread {
 //
 //                                break;
 
-                            case "servicios":
-                                Servicio servicio = new Servicio();
-                                //System.out.println("atributos: " + ic.getAtributos()[0]);
-                               HashMap<Integer, Object> servicios = servicio.listar(ic.getAtributos());
-                                if (servicios.size() > 0) {
-                                    Servicio primerServicio = (Servicio) servicios.get(1);
-                                    String[] tituloServicio = primerServicio.getAtributos();
+                                case "servicios":
+                                    Servicio servicio = new Servicio();
+                                    //System.out.println("atributos: " + ic.getAtributos()[0]);
+                                    HashMap<Integer, Object> servicios = servicio.listar(ic.getAtributos());
+                                    if (servicios.size() > 0) {
+                                        Servicio primerServicio = (Servicio) servicios.get(1);
+                                        String[] tituloServicio = primerServicio.getAtributos();
 
-                                   for (int i = 0; i < tituloServicio.length; i++) {
-                                       System.out.println("titulo " + i + ": " + tituloServicio[i]);
-                                   }
+                                        for (int i = 0; i < tituloServicio.length; i++) {
+                                            System.out.println("titulo " + i + ": " + tituloServicio[i]);
+                                        }
 
-                                    sc.enviar(tituloServicio, servicios, destinatario,servicio.tituloListar(),servicio.sintaxisInsertar(), "Insertar Servicio");
-                                } else {
-                                    System.out.println("ENVIAR ERROR QUE EST�? VAC�?O");
-                               }
+                                        sc.enviar(tituloServicio, servicios, destinatario, servicio.tituloListar(), servicio.sintaxisInsertar(), "Insertar Servicio");
+                                    } else {
+                                        System.out.println("ENVIAR ERROR QUE EST�? VAC�?O");
+                                    }
 
-                                break;
+                                    break;
                                 default:
                                     throw new AssertionError();
                             }
@@ -173,7 +213,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                             AtributoValor a = new AtributoValor();
                             switch (ic.getTabla()) {
                                 case "servicios":
-                                  HashMap<String, String> atrvs = a.convertAtributoValorHashMap(ic.getAtributos());
+                                    HashMap<String, String> atrvs = a.convertAtributoValorHashMap(ic.getAtributos());
                                     for (Map.Entry<String, String> entry : atrvs.entrySet()) {
                                         System.out.print("atributo: " + entry.getKey() + "= ");
                                         System.out.println("valor: " + entry.getValue());
@@ -184,18 +224,17 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                     servicio.setCosto(atrvs.get("costo"));
                                     servicio.setFormaCompra(atrvs.get("formaCompra"));
                                     servicio.setAtencion(atrvs.get("atencion"));
-                                  
-                                    
+
                                     HashMap<Integer, Object> servicioi = servicio.insertar(servicio);
                                     if (servicioi.size() > 0) {
-                                        System.out.println("servicio 1: "+servicioi.get(1));
+                                        System.out.println("servicio 1: " + servicioi.get(1));
                                         Servicio primerServicio = (Servicio) servicioi.get(1);
                                         String[] tituloServicio = primerServicio.getAtributos();
                                         sc.enviar(tituloServicio, servicioi, destinatario, servicio.tituloInsertar(), servicio.sintaxisListar(), "Listar Servicio");
                                     } else {
-                                        System.out.println("ERROR NO SE REGISTRÓ ");
+                                        sc.enviar(null, null, destinatario, null, null, "ERROR");
                                     }
-                                break;
+                                    break;
                                 case "users":
                                     HashMap<String, String> atrvu = a.convertAtributoValorHashMap(ic.getAtributos());
                                     for (Map.Entry<String, String> entry : atrvu.entrySet()) {
@@ -226,6 +265,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                         sc.enviar(tituloUser, useri, destinatario, user.tituloInsertar(), user.sintaxisListar(), "Listar Usuario");
                                     } else {
                                         System.out.println("ERROR NO SE REGISTRÓ ");
+                                         sc.enviar(null, null, destinatario, null, null, "ERROR");
                                     }
                                     break;
                                 case "consultas":
@@ -249,6 +289,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                         sc.enviar(tituloConsulta, consultai, destinatario, consulta.tituloInsertar(), consulta.sintaxisListar(), "Listar consultas");
                                     } else {
                                         System.out.println("ERROR NO SE REGISTRÓ ");
+                                         sc.enviar(null, null, destinatario, null, null, "ERROR");
                                     }
 
                                     break;
@@ -273,6 +314,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                         sc.enviar(tituloReporte, reportei, destinatario, reporte.tituloInsertar(), reporte.sintaxisListar(), "Listar Reportes");
                                     } else {
                                         System.out.println("ERROR NO SE REGISTRÓ ");
+                                         sc.enviar(null, null, destinatario, null, null, "ERROR");
                                     }
 
                                     break;
@@ -297,6 +339,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                         sc.enviar(tituloHistorial, historial1, destinatario, historial.tituloInsertar(), historial.sintaxisListar(), "Listar Historial");
                                     } else {
                                         System.out.println("ERROR NO SE REGISTRÓ ");
+                                         sc.enviar(null, null, destinatario, null, null, "ERROR");
                                     }
                                     break;
                                 case "citas":
@@ -320,10 +363,12 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                                         sc.enviar(tituloCital, cita1, destinatario, cita.tituloInsertar(), cita.sintaxisListar(), "Listar Cita");
                                     } else {
                                         System.out.println("ERROR NO SE REGISTRÓ ");
+                                         sc.enviar(null, null, destinatario, null, null, "ERROR");
                                     }
                                     break;
                                 default:
                                     throw new AssertionError();
+                                    
                             }
 
                             break;
@@ -332,6 +377,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                     }
                 } else {
                     //Mensaje de error
+                     sc.enviar(null, null, destinatario, null, null, "ERROR");
                     System.out.println("ERROR: accion: " + ic.getAccion() + ", tabla: " + ic.getTabla() + ", atributos: ");
                     if (ic.getAtributos() != null) {
                         for (int i = 0; i < ic.getAtributos().length; i++) {
@@ -343,6 +389,7 @@ public class ThreadAnalizeMessagePop3 extends Thread {
                 }
             }
         } catch (Exception e) {
+             //sc.enviar(null, null, destinatario, null, null, "ERROR");
             e.printStackTrace();
         }
     }

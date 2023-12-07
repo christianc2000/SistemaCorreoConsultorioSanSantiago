@@ -37,6 +37,11 @@ public class AnalizarSintaxis {
             String consult = matcher.group(2);
             
             switch (action) {
+                case "PAGO":
+                    System.out.println("atributos: "+consult);
+                    respuesta.setAccion("PAGO");
+                     respuesta.setAtributos(consult.split(","));
+                    break;
                 case "LIST":
                     // Realizar acción para LIST
                     System.out.println("Listando todos los elementos de la tabla " + consult);
