@@ -18,22 +18,24 @@ import sistemacorreoconsultoriosansantiago.manejadorcorreo.ManejadorPOP3;
  * @author Christian
  */
 public class AnalizarSintaxis {
-
+    
     private static final String COMMAND_PATTERN = "^([A-Z]+)\\[(.+)\\];$";
     private static final String LIST_PATTERN = "^\"([a-zA-Z]+)\"(:(\"[a-zA-Z]+\"(,\"[a-zA-Z]+\")*))?$";
     private static final String INSERT_PATTER = "^\"([a-zA-Z]+)\"(:(\\\"[a-zA-Z]+\\\"=\\\"[^\\\",]+\\\"(,\\\"[a-zA-Z]+\\\"=\\\"[^\\\",]+\\\")*))";
-
+    private static String patron = "\\[\"INICIAR\"\\];$";
+    
     public InformacionComando analizarSintaxis(String command) {
-
+        
         Pattern pattern = Pattern.compile(COMMAND_PATTERN);
         System.out.println("imprimiendo command: " + command);
         Matcher matcher = pattern.matcher(command);
         InformacionComando respuesta = new InformacionComando(null, null, null);
-
+        
         if (matcher.find()) {
+            System.out.println("INGRESAAAAA MATCH LISTAS");
             String action = matcher.group(1);
             String consult = matcher.group(2);
-
+            
             switch (action) {
                 case "LIST":
                     // Realizar acción para LIST
@@ -61,7 +63,7 @@ public class AnalizarSintaxis {
                     System.out.println("Insertando en la tabla " + consult);
                     Pattern insertPattern = Pattern.compile(INSERT_PATTER);
                     Matcher insertMatcher = insertPattern.matcher(consult);
-
+                    
                     if (insertMatcher.matches()) {
                         String table = insertMatcher.group(1);
                         String attributes = insertMatcher.group(2);
@@ -96,11 +98,21 @@ public class AnalizarSintaxis {
                     System.out.println("Comando desconocido: " + action);
             }
         } else {
-            System.out.println("Comando inválido");
+            Pattern patterns = Pattern.compile(patron);
+            // Crea un objeto Matcher
+            Matcher matchers = patterns.matcher(command);
+
+            // Verifica si hay coincidencia
+            if (matchers.matches()) {
+                respuesta.setAccion("INICIAR");
+                System.out.println("La cadena coincide con el patrón.");
+            } else {
+                System.out.println("Comando inválido");
+            }
         }
         return respuesta;
     }
-
+    
     public boolean analizarTabla(InformacionComando ic) { //[accion,tabla,String[]]
         TablasDefault td = new TablasDefault();
         for (int i = 0; i < td.getTablas().length; i++) {
@@ -142,7 +154,7 @@ public class AnalizarSintaxis {
         }
         return false;
     }
-
+    
     public boolean analizarAtributos(String atributos[], List<String> atributosComparacion) {
         for (String atributo : atributos) {
             System.out.println("atributo: " + atributo);
@@ -152,7 +164,7 @@ public class AnalizarSintaxis {
         }
         return true;
     }
-
+    
     public boolean analizarAtributosc(String atributos[], List<String> atributosComparacion) {
         System.out.println("ENTRA A ANALIZAR ATRIBUTOS");
         Set<String> atributosSet = new HashSet<>(Arrays.asList(atributos));
@@ -163,7 +175,7 @@ public class AnalizarSintaxis {
         }
         return true;
     }
-
+    
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         AnalizarSintaxis a = new AnalizarSintaxis();

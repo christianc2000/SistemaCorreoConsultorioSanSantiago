@@ -22,7 +22,7 @@ import static sistemaconsultoriosansantiago.datos.User.convertStringToSqlDate;
  * @author Christian
  */
 public class Historial {
-    
+
     private String id;
     private String nombrePaciente;
     private String pacienteId;
@@ -34,13 +34,14 @@ public class Historial {
     // Constructor
     public Historial(String id, String nombre_paciente, String pacienteId) {
         this.id = id;
-        this.nombrePaciente = nombre_paciente;        
+        this.nombrePaciente = nombre_paciente;
         this.pacienteId = pacienteId;
     }
 
     public Historial() {
         this.id = "";
         this.nombrePaciente = "";
+        this.pacienteId = "";
     }
 
     // Getters y setters (puedes generarlos automáticamente en muchos IDEs)
@@ -63,13 +64,12 @@ public class Historial {
     public String getPacienteId() {
         return pacienteId;
     }
-    
+
     public void setPacienteId(String pacienteId) {
         this.pacienteId = pacienteId;
     }
 
-   
-   public Statement getSt() {
+    public Statement getSt() {
         return st;
     }
 
@@ -84,7 +84,7 @@ public class Historial {
     public void setRs(ResultSet rs) {
         this.rs = rs;
     }
-    
+
     public DB getDb() {
         return db;
     }
@@ -100,7 +100,15 @@ public class Historial {
     public String tituloInsertar() {
         return "HISTORIAL REGISTRADO";
     }
-    
+
+    public String sintaxisListar() {
+        return "LIST[\"historials\"]";
+    }
+
+    public String sintaxisInsertar() {
+        return "INSERT[\"historials\":\"nombrePaciente\"=\"String\",\"pacienteId\"=\"int\"];";
+    }
+
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();
         Field[] fields = Historial.class.getDeclaredFields();
@@ -155,7 +163,7 @@ public class Historial {
                     historial.id = rs.getString("id");
                     historial.nombrePaciente = rs.getString("nombrePaciente");
                     historial.pacienteId = rs.getString("pacienteId");
-                   
+
                     System.out.println("nombre paciente: " + historial.nombrePaciente);
                     System.out.println("paciente: " + historial.pacienteId);
                     historials.put(Integer.parseInt(historial.id), historial);
@@ -171,7 +179,7 @@ public class Historial {
 
         return historials;
     }
-    
+
     public HashMap<Integer, Object> insertar(Historial historial) {
         HashMap<Integer, Object> historials = new HashMap<>();
         int nullIdKey = 1;
@@ -206,7 +214,7 @@ public class Historial {
         }
     }
 
-     public static java.sql.Date convertStringToSqlDate(String dateString) {
+    public static java.sql.Date convertStringToSqlDate(String dateString) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date utilDate = dateFormat.parse(dateString);

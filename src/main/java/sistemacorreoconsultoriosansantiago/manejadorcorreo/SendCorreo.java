@@ -48,9 +48,14 @@ public class SendCorreo {
             message.setFrom(new InternetAddress(user));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
             message.setSubject("Listar Usuario");
-            System.out.println("Destinatario: "+destinatario);
-            String html = new Respuesta().generarTablaHTML(cabezera, object, titulo, insertar, accion);
-
+            System.out.println("Destinatario: " + destinatario);
+            String html;
+            if (accion.equals("INICIAR")) {
+                html = new Respuesta().generarHTML();
+            } else {
+                html = new Respuesta().generarTablaHTMLBoton(cabezera, object, titulo, insertar, accion);
+                // html = new Respuesta().generarTablaHTML(cabezera, object, titulo, insertar, accion);
+            }
             message.setContent(html, "text/html; charset=utf-8");
             // Enviar el mensaje
             Transport.send(message);

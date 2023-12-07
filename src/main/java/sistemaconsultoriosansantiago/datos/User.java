@@ -245,11 +245,11 @@ public class User {
     }
 
     public String sintaxisListar() {
-        return "LIST[\"users\"]";
+        return "LIST%5B%22users%22%5D;";
     }
 
     public String sintaxisInsertar() {
-        return "INSERT[\"users\":\"ci\"=\"String\",\"nombre\"=\"String\",\"apellido\"=\"String\",\"fechaNacimiento\"=\"Date\",\"celular\"=\"int\",\"tipo\"=\"String\",\"genero\"=\"String\",\"residenciaActual\"=\"String\",\"email\"=\"String\",\"password\"=\"String\",\"urlFoto\"=\"String\",\"formacion\"=\"String\",\"sueldo\"=\"int\",\"hijo\"=\"int\",\"ocupacion\"=\"String\"];";
+        return "INSERT[%22users%22:%22ci%22=%22String%22,%22nombre%22=%22String%22,%22apellido%22=%22String%22,%22fechaNacimiento%22=%22Date%22,%22celular%22=%22int%22,%22tipo%22=%22String%22,%22genero%22=%22String%22,%22residenciaActual%22=%22String%22,%22email%22=%22String%22,%22password%22=%22String%22,%22urlFoto%22=%22String%22,%22formacion%22=%22String%22,%22sueldo%22=%22int%22,%22hijo%22=%22int%22,%22ocupacion%22=%22String%22];";
     }
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();

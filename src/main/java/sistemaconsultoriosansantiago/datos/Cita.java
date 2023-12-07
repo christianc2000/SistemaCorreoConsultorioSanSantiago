@@ -133,7 +133,13 @@ public class Cita {
     public String tituloInsertar() {
         return "CITA REGISTRADA";
     }
-    
+      public String sintaxisListar() {
+        return "LIST[\"citas\"]";
+    }
+
+    public String sintaxisInsertar() {
+        return "INSERT[\"citas\":\"fechaCinta\"=\"String\",\"estadoCita\"=\"boolean\",\"costoCita\"=\"float\",\"pacienteId\"=\"int\",\"medicoId\"=\"int\"];";
+    }
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();
         Field[] fields = Cita.class.getDeclaredFields();

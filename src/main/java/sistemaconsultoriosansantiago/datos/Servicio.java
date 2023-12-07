@@ -92,6 +92,14 @@ public class Servicio {
         return "SERVICIO REGISTRADO";
     }
     
+     public String sintaxisListar() {
+        return "LIST[\"servicios\"]";
+    }
+
+    public String sintaxisInsertar() {
+        return "INSERT[\"servicios\":\"nombre\"=\"String\",\"costo\"=\"float\",\"formaCompra\"=\"String\",\"atencion\"=\"String\"];";
+    }
+    
     public String[] getAtributos() {
         ArrayList<String> atributosConValor = new ArrayList<>();
         Field[] fields = Servicio.class.getDeclaredFields();
